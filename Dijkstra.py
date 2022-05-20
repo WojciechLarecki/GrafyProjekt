@@ -21,7 +21,7 @@ def Dijkstra(start, stop, G):
         visited[u]=1
         for i in range(0, len(G)):
             #przy zalozeniu ze nie ma krawedzi o wadze 0, 0 traktuje jako brak krawedzi
-            if visited[i]==0:
+            if visited[i] == 0:
                 if G[u][i]!=0:
                     if (dist[i] > (dist[u] + G[u][i])):
                         dist[i] = dist[u] + G[u][i]
