@@ -1,5 +1,4 @@
 import PySimpleGUI as sg
-import os.path
 
 sg.theme("Dark Amber")
 user_input_column = [
