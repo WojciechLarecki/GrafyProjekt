@@ -37,13 +37,8 @@ def Dijkstra(start, stop, G):
             if tmp == -1:
                 break
             kolejnosc.append(tmp)
-    # zwracane przez pierwotny algortym
-    # print(dist)
-    # print(prev)
-    # kolejnosc.reverse()
-    # return kolejnosc
-    kolejnosc.reverse()
-    return kolejnosc  # , dist[stop]
+
+    return kolejnosc, dist[stop]
 
 
 # print("Przykład 1")
@@ -80,10 +75,16 @@ def Dijkstra(start, stop, G):
 
 
 def convertToNumpyArray(text):
-    rows = text.split(",\n")
-    s = len(rows)  # size
-    array = np.empty((s, s), dtype=float)
-    for i in range(len(s)):
-        newRow = np.array(np.fromstring(rows[i][1: -1], dtype=float, sep=","))
-        array[i] = newRow
+    try:
+        rows = text.split(",\n")
+        s = len(rows)  # size
+        array = np.empty((s, s), dtype=float)
+        for i in range(s):
+            newRow = np.array(np.fromstring(
+                rows[i][1: -1], dtype=float, sep=","))
+            array[i] = newRow
+        if (array.size != s ** 2):
+            raise Exception
+    except:
+        raise Exception("Zawartość pliku jest nieodpowiednia.")
     return array
