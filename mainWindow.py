@@ -1,5 +1,7 @@
+from sre_parse import State
 import PySimpleGUI as sg
 import Dijkstra as dk
+from graphDraw import delete_figure_agg, draw_figure, drawGraph
 
 sg.theme("Dark Amber")
 user_input_column = [
@@ -14,29 +16,29 @@ user_input_column = [
             sg.Text("Koniec:"),
             sg.Spin([], tooltip="wierzchołek końcowy", key="end")]], justification="center")],
     [sg.HorizontalSeparator(pad=(None, (10, 7)))],
-    [sg.Text("Informacje o pliku:", size=(35, None), justification="center")],
+    [sg.Text("Informacje o pliku:", size=(35, None))],
     [sg.Multiline(size=(38, 3), auto_refresh=True,
-                  tooltip="ścieżka do pliku", k="path")],
+                  tooltip="ścieżka do pliku",disabled=True, k="path")],
     [sg.Multiline(size=(38, 7), horizontal_scroll=True,
-                  tooltip="zawartość pliku", k="content")],
+                  tooltip="zawartość pliku",disabled=True, k="content")],
 ]
 
 user_output_column = [
-    [sg.Multiline(size=(38, 3), auto_refresh=True,
-                  tooltip="wynik obliczeń", k="outputContent")],
-    [sg.Multiline("placeHolder", size=(38, 15), auto_refresh=True,
-                  tooltip="placeHolder", k="placeHolder")]
+    [sg.Text("Wynik obliczeń:", size=(35, None), justification="center")],
+    [sg.Multiline(size=(100, 3), auto_refresh=True,
+                  tooltip="wynik obliczeń",disabled=True, k="outputContent")],
+    [sg.Canvas(size=(38, 15), key="-CANVAS-")]
 ]
 
 layout = [
     [
-        sg.Column(user_input_column),
+        sg.Column(user_input_column,vertical_alignment='t'),
         sg.VSeperator(),
-        sg.Column(user_output_column),
+        sg.Column(user_output_column,element_justification='center'),
     ]
 ]
 
-window = sg.Window("PathFinder", layout)
+window = sg.Window("PathFinder", layout,element_justification='top', size=(1000,600))
 graph = []
 
 
@@ -72,7 +74,7 @@ def set_up_text(content):
     text += "- koszt: " + str(content[1])
     return text
 
-
+figure_agg = None
 while True:
     event, values = window.read()
     if event == "Exit" or event == sg.WIN_CLOSED:
@@ -82,6 +84,7 @@ while True:
             filePath = values["graphBrowser"]
             fileContent = get_file_content(filePath)
             graph = dk.convertToNumpyArray(fileContent)
+            
             window["content"].update(fileContent)
             window["path"].update(filePath)
             set_spins(window, len(graph))
@@ -96,6 +99,9 @@ while True:
         if start == end:
             sg.popup("Krawędzie początkowa i końcowa nie mogą być takie same.")
             continue
+        if figure_agg:
+            delete_figure_agg(figure_agg)
+        figure_agg = draw_figure(window['-CANVAS-'].TKCanvas, drawGraph(graph))
         content = dk.Dijkstra(start, end, graph)
         text = set_up_text(content)
         window["outputContent"].update(text)
