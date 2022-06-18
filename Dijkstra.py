@@ -37,7 +37,7 @@ def Dijkstra(start, stop, G):
             if tmp == -1:
                 break
             kolejnosc.append(tmp)
-
+    kolejnosc.reverse()
     return kolejnosc, dist[stop]
 
 

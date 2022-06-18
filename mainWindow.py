@@ -54,9 +54,9 @@ def get_file_content(filePath):
 
 
 def set_spins(window, max):
-    val = [i for i in range(1, max + 1)]
+    val = [i for i in range(0, max)]
     window["start"].update(val[0], values=val)
-    window["end"].update(val[0], values=val)
+    window["end"].update(val[max-1], values=val)
 
 
 def reset_window(window):
